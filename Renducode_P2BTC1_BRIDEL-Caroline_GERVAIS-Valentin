@@ -1,0 +1,260 @@
+"""
+Gervais Valentin
+Bridel Caroline 
+Pré Ing 2 BTC groupe 1
+"""
+
+
+
+from matplotlib import pyplot as plt
+import random
+import math
+import os
+import shutil
+
+'''Definition of functions'''
+
+
+#Function to retrieve the x and y values and
+#associates a string with treatment
+def data_extraction(data):
+    vx=int(data[7])
+    vy=math.log10(float(data[8]))
+    treatment=data[5]
+    return vx, vy, treatment
+
+# Function for the list of data for the output file
+def save_data(file_object, mouse_id, treatment, area, x, y):
+    # Creating the list of values (converting x and y to str)
+    list_to_write = [mouse_id, treatment, area, str(x), str(y)]
+    # Junction with semicolons
+    list_data = ";".join(list_to_write)
+    # Writing to the file with a line break
+    file_object.write(list_data + "\n")
+
+# Function to plot a data curve of the log10 of the number of bacteria 
+# as a function of the day of treatment
+def plot_fecal_data(x, y, treatment, axes_fecal, used_label_fecal):
+    clr = '#0000FF'
+    if treatment == 'ABX':
+        clr = '#FF0000'
+    
+    # Allows adding a single legend per process
+    if treatment not in used_label_fecal: 
+        axes_fecal.plot(x, y, label=treatment, color=clr, alpha=0.5)
+        used_label_fecal.add(treatment) 
+    else:
+        axes_fecal.plot(x, y, color=clr, alpha=0.5)
+        
+    axes_fecal.grid(True)
+    axes_fecal.set_title("Fecal live bacteria")
+    axes_fecal.set_xlabel("Treatment's day")
+    axes_fecal.set_ylabel("log(10)(live bacteria/wetg)")
+    figure_fecal.legend(loc="upper right") # Caption with its location
+    images_pathway_data_fecal=os.path.join(images_pathway,"outfecal.png")
+    figure_fecal.savefig(images_pathway_data_fecal) # Name of the file and it's output
+
+
+
+# Function to draw a violin plot of the log10 of the number of bacteria 
+# as a function of treatment
+def create_violin_plot(abx, placebo, points, axes, title,bottom):
+    colors = ['#FF6633', '#3366FF'] # ABX (red/orange), Placebo (blue)
+    all_data = abx + placebo
+    y_min = min(all_data) - 0.05
+    y_max = max(all_data) + 0.05
+    #Creation of the violin plot
+    parts = axes.violinplot([abx, placebo], showmeans=False, showmedians=True) 
+
+    for i, pc in enumerate(parts['bodies']):
+        pc.set_facecolor(colors[i])
+        pc.set_edgecolor('black')
+        pc.set_alpha(0.5)
+
+    # Random placement of points on X
+    position_x = []
+    position_y = []
+    colorviolin = []
+
+    for point in points:
+        position_x.append(point[0])
+        position_y.append(point[1])
+        colorviolin.append(point[2])
+
+    random_position = []
+    for point in position_x:
+        gap = random.uniform(-0.1, 0.1)
+        random_position.append(point + gap)
+
+    axes.scatter(random_position, position_y, color=colorviolin, s=10, alpha=0.6, linewidths=0.5)
+
+    # Axis configuration
+    axes.grid(True)
+    axes.set_ylim(bottom=y_min,top=y_max)
+    axes.set_xticks([1, 2])
+    axes.set_xticklabels(['ABX', 'Placebo'])
+    axes.set_ylabel('log(10)(live bacteria/wetg)')
+    axes.set_title(title)
+
+
+'''MAIN LOOP '''
+
+# Initialization of variables
+all_data=[]
+y_min=0 # Minimum for the Y-axis
+y_max=0 # Maximum for the Y-axis
+group_abx=[]
+group_placebo=[]
+Igroup_abx=[]
+Igroup_placebo=[]
+points_cecal=[]
+points_ileal=[]
+used_label_fecal=set()# Variable that stores the legends already used
+used_label_cecal=set()
+figure_fecal, axes_fecal= plt.subplots() # Tuple with figure object and axes
+figure_cecal, axes_cecal= plt.subplots()
+figure_ileal, axes_ileal= plt.subplots()
+N_mice=600
+
+# Requests information from the user
+path=input("What is the pathway in which you want the new folder to be created ? \n ")
+path_data_real=input("What is the pathway of your data csv file (file name included) ? \n ")
+filename=input("What is the name of the csv file (with extension) ? \n")
+
+# Creating new files and copying the data file
+# Name of the different folders
+new_folder = "Projet_Gervais_Valentin_Bridel_Caroline"
+output_folder = "output"
+images_folder = "images"
+input_folder="input"
+
+# Creating the new pathways
+newpathway = os.path.join(path, new_folder)
+complet_pathway = os.path.join(path,new_folder)
+output_pathway = os.path.join(newpathway,output_folder)
+images_pathway = os.path.join(newpathway,images_folder)
+input_pathway=os.path.join(newpathway,input_folder)
+
+os.makedirs(input_pathway, exist_ok=True)
+os.makedirs(output_pathway, exist_ok=True)
+os.makedirs(images_pathway, exist_ok=True)
+
+# Allows copying the data file
+data_real_file=shutil.copy2(path_data_real,input_pathway) 
+
+
+# Creating the new CSV file for storing useful data
+output_pathway_data=os.path.join(output_pathway, "data_output.csv")
+fp_create=open(output_pathway_data,'w')
+
+# Column names of the file
+listcolumn=['mouse_ID','treatment','collection area',"X position","Y position"]                 
+# Separation of column names with ;
+list1=";".join(listcolumn)
+fp_create.write(list1+"\n")
+
+        
+# Loop to process all the mice        
+for i in range (0,N_mice + 1):
+    # Retrieving the mouse ID
+    mouse_ID ='00' + str(i)
+    mouse_ID=mouse_ID[-3:]
+    mouse_ID='ABX'+mouse_ID
+    
+    # Initialization of loop variables
+    treatment='?' # Allows you to verify that the mouse ID is correctly associated
+    # List of x and y positions
+    x=[]
+    y=[]
+    
+    # Opening the initial data file
+    input_pathway_data=os.path.join(input_pathway, f"{filename}")
+    fp=open(input_pathway_data,'r')
+    
+    # Remove the first line
+    line=fp.readline()
+    
+    # Getting the values from the first row of data
+    line=fp.readline()
+    
+    # For each line
+    while line !="":
+        line=line.replace('\n','')
+        data=line.split(';')
+        
+        # If all the mouse data is present
+        if len(data)==11:
+            
+                # If column 4 corresponds to the mouse ID
+                if data[4]==mouse_ID:
+                    
+                    # If the collection area is fecal
+                    if data[2]=="fecal":
+                        # Using the function to retrieve the values
+                        vx,vy,treatment=data_extraction(data)
+                        
+                        # Add to position lists
+                        x.append(vx)
+                        y.append(vy)
+                        
+                        # Add the useful data to the new file
+                        save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                        
+                    # If the collection area is cecale   
+                    if data[2]=="cecal":
+                        vx,vy,treatment=data_extraction(data)
+                        
+                        # If tratment is ABX
+                        if treatment == 'ABX':
+                            # Add the calculated value to the Y positions list of the ABX group
+                            group_abx.append(vy)
+                            # Add to the list of cecal points
+                            # Groupe position, Y position, color
+                            points_cecal.append((1, vy, '#993300'))
+                            
+                        #if treatment is plecebo same thing as ABX
+                        elif treatment == 'placebo':
+                            group_placebo.append(vy)
+                            points_cecal.append((2, vy, '#003399'))
+                            
+                            # Add the useful data to the new file    
+                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                                    
+                    # If the collection area is ileale same thing as cecale  
+                    if data[2]=="ileal":
+                        vx,vy,treatment=data_extraction(data)
+                        
+                        if treatment == 'ABX':
+                            Igroup_abx.append(vy)
+                            points_ileal.append((1, vy, '#993300'))
+                        elif treatment == 'placebo':
+                            Igroup_placebo.append(vy)
+                            points_ileal.append((2, vy, '#003399'))
+                        
+                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
+        
+        # Read the list line
+        line=fp.readline()
+
+    # Closing the initial data file
+    fp.close()
+ 
+    
+    # calls the function that generates the graph of bacteria in the fecal area
+    if treatment != '?':# Make sure the treatment has been retrieved
+        plot_fecal_data(x, y, treatment, axes_fecal, used_label_fecal)
+
+
+
+# Calls the function that generates the graph of bacteria in the cecal area
+create_violin_plot(group_abx, group_placebo, points_cecal, axes_cecal, "Cecal live bacteria", 5.8)
+images_pathway_data_cecal=os.path.join(images_pathway,"outcecal.png")
+figure_cecal.savefig(images_pathway_data_cecal) #nom du fichier et de sa sortie 
+
+# calls the function that generates the graph of bacteria in the ileal area
+create_violin_plot(Igroup_abx, Igroup_placebo, points_ileal, axes_ileal, "Ileal live bacteria",5.6)
+images_pathway_data_ileal=os.path.join(images_pathway,"outileal.png")
+figure_ileal.savefig(images_pathway_data_ileal) #nom du fichier et de sa sortie 
+
+# Closing the file with the useful values for producing the graphs
+fp_create.close()
