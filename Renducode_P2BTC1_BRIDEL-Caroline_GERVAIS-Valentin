@@ -231,7 +231,7 @@ for i in range (0,N_mice + 1):
                             Igroup_placebo.append(vy)
                             points_ileal.append((2, vy, '#003399'))
                         
-                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                        save_data(fp_create, data[4], treatment, data[2], vx, vy)
         
         # Read the list line
         line=fp.readline()
@@ -258,3 +258,4 @@ figure_ileal.savefig(images_pathway_data_ileal) #nom du fichier et de sa sortie
 
 # Closing the file with the useful values for producing the graphs
 fp_create.close()
+
