@@ -211,7 +211,7 @@ for i in range (0,N_mice + 1):
                             # Add to the list of cecal points
                             # Groupe position, Y position, color
                             points_cecal.append((1, vy, '#993300'))
-                            
+                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
                         #if treatment is plecebo same thing as ABX
                         elif treatment == 'placebo':
                             group_placebo.append(vy)
@@ -227,11 +227,11 @@ for i in range (0,N_mice + 1):
                         if treatment == 'ABX':
                             Igroup_abx.append(vy)
                             points_ileal.append((1, vy, '#993300'))
+                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
                         elif treatment == 'placebo':
                             Igroup_placebo.append(vy)
                             points_ileal.append((2, vy, '#003399'))
-                        
-                        save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
         
         # Read the list line
         line=fp.readline()
@@ -258,4 +258,5 @@ figure_ileal.savefig(images_pathway_data_ileal) #nom du fichier et de sa sortie
 
 # Closing the file with the useful values for producing the graphs
 fp_create.close()
+
 
