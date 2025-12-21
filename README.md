@@ -22,10 +22,10 @@ A second dialog window will open. Choose the folder where you want the project d
 ## Processing : 
 The script will create a folder named Projet_Gervais_Valentin_Bridel_Caroline. A progress indicator will appear in the console showing the estimated time remaining based on the number of mice
 ## Results : 
-              1. Once finished, navigate to the created folder to find:
-              2. input : A copy of your original CSV file
-              3. output : Three CSV files (fecal, cecal, ileal) with extracted and formatted data necessary to draw graphs
-              4. images : Generated plots (outfecal.png, outcecal.png, outileal.png)
+Once finished, navigate to the created folder to find:
+1. input : A copy of your original CSV file
+2. output : Three CSV files (fecal, cecal, ileal) with extracted and formatted data necessary to draw graphs
+3. images : Generated plots (outfecal.png, outcecal.png, outileal.png)
 
 # Functional Scope & Limitations
 ## Implemented Features
