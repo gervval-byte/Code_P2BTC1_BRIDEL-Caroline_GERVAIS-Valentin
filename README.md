@@ -13,10 +13,14 @@ To run this application, you need Python 3 installed on your machine.
 You also need the `matplotlib` library for data visualization.
 
 # How to use 
-## Launch the script : Run the Python file from your terminal or IDE.
-## Select the Source File : A file dialog window will open. Select the raw CSV data file 
-## Select the Destination Folder : A second dialog window will open. Choose the folder where you want the project directory to be created
-## Processing : The script will create a folder named Projet_Gervais_Valentin_Bridel_Caroline. A progress indicator will appear in the console showing the estimated time remaining based on the number of mice
+## Launch the script : 
+Run the Python file from your terminal or IDE.
+## Select the Source File : 
+A file dialog window will open. Select the raw CSV data file 
+## Select the Destination Folder : 
+A second dialog window will open. Choose the folder where you want the project directory to be created
+## Processing : 
+The script will create a folder named Projet_Gervais_Valentin_Bridel_Caroline. A progress indicator will appear in the console showing the estimated time remaining based on the number of mice
 ## Results : 
               1. Once finished, navigate to the created folder to find:
               2. input : A copy of your original CSV file
@@ -32,7 +36,8 @@ Correctly isolates Mouse_ID, Treatment, Area, X (Time/Group), and Y (Log10 of ba
 ### Visualization : 
 1. Line plots for Fecal data (Time course).
 2. Violin plots with scattered data points for Cecal and Ileal data
-### User Interface: Uses tkinter for easy file selection instead of manually written paths
+### User Interface: 
+Uses tkinter for easy file selection instead of manually written paths
 
 ## Limitations and Known Issues
 The application fulfills the project requirements, but the following limitations exist:
