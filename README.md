@@ -8,11 +8,11 @@ This Python application automates the processing of biological data regarding th
 3.  Violin plots comparing bacterial load in cecal and ileal contents between ABX and Placebo groups.
 The application automatically organizes the output into a structured project folder.
 
-#Prerequisites
+# Prerequisites
 To run this application, you need Python 3 installed on your machine.
 You also need the `matplotlib` library for data visualization.
 
-#How to use 
+# How to use 
 ## Launch the script : Run the Python file from your terminal or IDE.
 ## Select the Source File : A file dialog window will open. Select the raw CSV data file 
 ## Select the Destination Folder : A second dialog window will open. Choose the folder where you want the project directory to be created
