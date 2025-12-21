@@ -78,8 +78,6 @@ def plot_fecal_data(x, y, treatment, axes_fecal, used_label_fecal):
     axes_fecal.set_xlabel("Treatment's day")
     axes_fecal.set_ylabel("log(10)(live bacteria/wetg)")
     figure_fecal.legend(loc="upper right") # Caption with its location
-    
-
 
 
 # Function to draw a violin plot of the log10 of the number of bacteria 
@@ -323,3 +321,4 @@ figure_ileal.savefig(images_pathway_data_ileal) #nom du fichier et de sa sortie
 fp_create_fecal.close()
 fp_create_cecal.close()
 fp_create_ileal.close()
+
