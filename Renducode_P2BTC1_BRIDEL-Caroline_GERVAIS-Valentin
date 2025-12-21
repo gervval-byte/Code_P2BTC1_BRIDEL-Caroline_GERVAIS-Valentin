@@ -1,3 +1,4 @@
+
 """
 Gervais Valentin
 Bridel Caroline 
@@ -11,12 +12,39 @@ import random
 import math
 import os
 import shutil
+from tkinter import filedialog
+import tkinter as tk
+import time
 
 '''Definition of functions'''
+def find_number_of_mice(folderpath):
+    # Initialize the max_ID
+    max_id = 0
+    f=open(folderpath,'r')
+    # Remove the first line
+    f.readline() 
+    # Getting the values from the first row of data
+    line=f.readline()
+    # For each line
+    while line !="":
+        # Remove invisible characters at the end
+        line = line.strip()
+        # Split the line into a list using ';' as separator
+        column = line.split(';')
+        # Get the mouse_id
+        mouse_id = column[4] 
+        if mouse_id.startswith("ABX"):
+            # Remove "ABX" 
+            number = int(mouse_id[3:])
+            #If number is bigger than the max_id then max_id is replaced by number 
+            if number > max_id:
+                max_id = number
+        line = f.readline()
+    f.close()
+    return max_id
 
-
-#Function to retrieve the x and y values and
-#associates a string with treatment
+# Function to retrieve the x and y values and
+# associates a string with treatment
 def data_extraction(data):
     vx=int(data[7])
     vy=math.log10(float(data[8]))
@@ -58,12 +86,12 @@ def plot_fecal_data(x, y, treatment, axes_fecal, used_label_fecal):
 
 # Function to draw a violin plot of the log10 of the number of bacteria 
 # as a function of treatment
-def create_violin_plot(abx, placebo, points, axes, title,bottom):
+def create_violin_plot(abx, placebo,points, axes, title,bottom):
     colors = ['#FF6633', '#3366FF'] # ABX (red/orange), Placebo (blue)
     all_data = abx + placebo
     y_min = min(all_data) - 0.05
     y_max = max(all_data) + 0.05
-    #Creation of the violin plot
+    # Creation of the violin plot
     parts = axes.violinplot([abx, placebo], showmeans=False, showmedians=True) 
 
     for i, pc in enumerate(parts['bodies']):
@@ -114,13 +142,27 @@ used_label_cecal=set()
 figure_fecal, axes_fecal= plt.subplots() # Tuple with figure object and axes
 figure_cecal, axes_cecal= plt.subplots()
 figure_ileal, axes_ileal= plt.subplots()
-N_mice=600
+start_time = time.time()
 
 # Requests information from the user
-path=input("What is the pathway in which you want the new folder to be created ? \n ")
-path_data_real=input("What is the pathway of your data csv file (file name included) ? \n ")
-filename=input("What is the name of the csv file (with extension) ? \n")
+# Start the graphics engine
+root = tk.Tk()
+# Force the window to stay on top
+root.attributes("-topmost", True)
+# Hide the empty background window
+root.withdraw()
 
+# Open a file dialog for the user to select the source CSV data file (parent=root helps focus)
+path_data_real = filedialog.askopenfilename(parent=root,title="Choose your CSV file",filetypes=[("Fichiers CSV", "*.csv"), ("Tous les fichiers", "*.*")])
+# Check if the user selected a file
+if path_data_real:
+    # Extract the base filename
+    filename = os.path.basename(path_data_real) 
+    path = filedialog.askdirectory(title="Choose a folder")
+else:
+    # If no file was selected display an error message
+    print("No selection")
+    exit()
 # Creating new files and copying the data file
 # Name of the different folders
 new_folder = "Projet_Gervais_Valentin_Bridel_Caroline"
@@ -144,16 +186,22 @@ data_real_file=shutil.copy2(path_data_real,input_pathway)
 
 
 # Creating the new CSV file for storing useful data
-output_pathway_data=os.path.join(output_pathway, "data_output.csv")
-fp_create=open(output_pathway_data,'w')
-
+output_pathway_dataf=os.path.join(output_pathway, "data_output_fecal.csv")
+output_pathway_datac=os.path.join(output_pathway, "data_output_cecal.csv")
+output_pathway_datai=os.path.join(output_pathway, "data_output_ileal.csv")
+fp_create_fecal=open(output_pathway_dataf,'w')
+fp_create_cecal=open(output_pathway_datac,'w')
+fp_create_ileal=open(output_pathway_datai,'w')
 # Column names of the file
 listcolumn=['mouse_ID','treatment','collection area',"X position","Y position"]                 
 # Separation of column names with ;
 list1=";".join(listcolumn)
-fp_create.write(list1+"\n")
-
-        
+fp_create_fecal.write(list1+"\n")
+fp_create_cecal.write(list1+"\n")
+fp_create_ileal.write(list1+"\n")
+# Find the number of mice
+N_mice=find_number_of_mice(path_data_real)
+       
 # Loop to process all the mice        
 for i in range (0,N_mice + 1):
     # Retrieving the mouse ID
@@ -180,6 +228,7 @@ for i in range (0,N_mice + 1):
     # For each line
     while line !="":
         line=line.replace('\n','')
+        # Split the line into a list (; as separator)
         data=line.split(';')
         
         # If all the mouse data is present
@@ -198,7 +247,7 @@ for i in range (0,N_mice + 1):
                         y.append(vy)
                         
                         # Add the useful data to the new file
-                        save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                        save_data(fp_create_fecal, data[4], treatment, data[2], vx, vy)
                         
                     # If the collection area is cecale   
                     if data[2]=="cecal":
@@ -211,14 +260,15 @@ for i in range (0,N_mice + 1):
                             # Add to the list of cecal points
                             # Groupe position, Y position, color
                             points_cecal.append((1, vy, '#993300'))
-                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                            save_data(fp_create_cecal, data[4], treatment, data[2], vx, vy)
+
                         #if treatment is plecebo same thing as ABX
                         elif treatment == 'placebo':
                             group_placebo.append(vy)
                             points_cecal.append((2, vy, '#003399'))
                             
                             # Add the useful data to the new file    
-                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                            save_data(fp_create_cecal, data[4], treatment, data[2], vx, vy)
                                     
                     # If the collection area is ileale same thing as cecale  
                     if data[2]=="ileal":
@@ -227,11 +277,12 @@ for i in range (0,N_mice + 1):
                         if treatment == 'ABX':
                             Igroup_abx.append(vy)
                             points_ileal.append((1, vy, '#993300'))
-                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                            save_data(fp_create_ileal, data[4], treatment, data[2], vx, vy)
                         elif treatment == 'placebo':
                             Igroup_placebo.append(vy)
                             points_ileal.append((2, vy, '#003399'))
-                            save_data(fp_create, data[4], treatment, data[2], vx, vy)
+                        
+                            save_data(fp_create_ileal, data[4], treatment, data[2], vx, vy)
         
         # Read the list line
         line=fp.readline()
@@ -243,6 +294,18 @@ for i in range (0,N_mice + 1):
     # calls the function that generates the graph of bacteria in the fecal area
     if treatment != '?':# Make sure the treatment has been retrieved
         plot_fecal_data(x, y, treatment, axes_fecal, used_label_fecal)
+        
+    # Calculate progress and time remaining
+    if i > 0:  
+        elapsed_time = time.time() - start_time
+        mice_remaining = N_mice - i
+        time_per_mouse = elapsed_time / i
+        eta_seconds = mice_remaining * time_per_mouse
+        # Convert remaining time into minutes and seconds
+        minutes, seconds = divmod(int(eta_seconds), 60)
+        #Print every 25 mice
+        if i % 25 == 0:
+            print(f"Souris {i}/{N_mice} | Time left : {minutes}m {seconds}s")
 
 
 
@@ -257,6 +320,6 @@ images_pathway_data_ileal=os.path.join(images_pathway,"outileal.png")
 figure_ileal.savefig(images_pathway_data_ileal) #nom du fichier et de sa sortie 
 
 # Closing the file with the useful values for producing the graphs
-fp_create.close()
-
-
+fp_create_fecal.close()
+fp_create_cecal.close()
+fp_create_ileal.close()
