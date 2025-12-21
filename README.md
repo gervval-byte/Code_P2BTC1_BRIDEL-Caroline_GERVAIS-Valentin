@@ -23,20 +23,20 @@ How to use
 
 Functional Scope & Limitations
 1. Implemented Features
-Dynamic Folder Creation : Automatically creates the required directory structure (input, output, images).
-Data Extraction : Correctly isolates Mouse_ID, Treatment, Area, X (Time/Group), and Y (Log10 of bacteria).
-Visualization : Line plots for Fecal data (Time course).
-                Violin plots with scattered data points for Cecal and Ileal data
-User Interface: Uses tkinter for easy file selection instead of manually written paths
+  Dynamic Folder Creation : Automatically creates the required directory structure (input, output, images).
+  Data Extraction : Correctly isolates Mouse_ID, Treatment, Area, X (Time/Group), and Y (Log10 of bacteria).
+  Visualization : a. Line plots for Fecal data (Time course).
+                  b. Violin plots with scattered data points for Cecal and Ileal data
+  User Interface: Uses tkinter for easy file selection instead of manually written paths
 2. Limitations and Known Issues
 The application fulfills the project requirements, but the following limitations exist:
-Performance Optimization (Time Complexity): The current algorithm iterates through the entire source file for each mouse ID identified and does not save information in a dictionnary
-                                            For small datasets, the execution time is acceptable. However, for very large datasets, the processing time would increase significantly and exponentially
-Input File Rigidity: The script strictly expects the CSV columns to be in a specific order and won't work if the input CSV structure changes (the script will extract incorrect data or eventually crash)
-                     The script also don't work for any other mouth name that would'nt start with ABX and if the treatment is not placebo and ABX
-                     Lack of Error Handling for Data Types: Inside data_extraction, the script directly cast values: vx=int(data[7]) and vy=math.log10(float(data[8])) and if a cell in the CSV contains text instead of a number, the script will crash immediately
-Statistical Analysis: The application generates visual comparisons but does not perform mathematical statistical tests for the user to confirm if the differences between ABX and placebo
-Image Saving Strategy: Currently, the fecal plot image is saved at the very end of the process to optimize performance. Real-time visualization during processing is disabled to save resources and time
+a. Performance Optimization (Time Complexity): The current algorithm iterates through the entire source file for each mouse ID identified and does not save information in a dictionnary
+                                               For small datasets, the execution time is acceptable. However, for very large datasets, the processing time would increase significantly and exponentially
+b. Input File Rigidity: The script strictly expects the CSV columns to be in a specific order and won't work if the input CSV structure changes (the script will extract incorrect data or eventually crash)
+                        The script also don't work for any other mouth name that would'nt start with ABX and if the treatment is not placebo and ABX
+                        Lack of Error Handling for Data Types: Inside data_extraction, the script directly cast values: vx=int(data[7]) and vy=math.log10(float(data[8])) and if a cell in the CSV contains text instead of a number, the script will crash immediately
+c. Statistical Analysis: The application generates visual comparisons but does not perform mathematical statistical tests for the user to confirm if the differences between ABX and placebo
+d. Image Saving Strategy: Currently, the fecal plot image is saved at the very end of the process to optimize performance. Real-time visualization during processing is disabled to save resources and time
 
 
 
