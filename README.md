@@ -1,7 +1,7 @@
 Authors: Gervais Valentin & Bridel Caroline
 Group: Pré Ing 2 BTC groupe 1
 
-#Short description
+# Short description
 This Python application automates the processing of biological data regarding the effect of antibiotics (ABX) on gut microbiota in mice. The script processes raw CSV data to generate:
 1.  Formatted CSV files containing only relevant data for analysis.
 2.  Graph showing the evolution of fecal bacteria over time.
