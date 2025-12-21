@@ -15,7 +15,6 @@ import shutil
 from tkinter import filedialog
 import tkinter as tk
 import time
-
 '''Definition of functions'''
 def find_number_of_mice(folderpath):
     # Initialize the max_ID
@@ -153,7 +152,7 @@ root.attributes("-topmost", True)
 root.withdraw()
 
 # Open a file dialog for the user to select the source CSV data file (parent=root helps focus)
-path_data_real = filedialog.askopenfilename(parent=root,title="Choose your CSV file",filetypes=[("Fichiers CSV", "*.csv"), ("Tous les fichiers", "*.*")])
+path_data_real = filedialog.askopenfilename(parent=root,title="Choose your CSV file",filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
 # Check if the user selected a file
 if path_data_real:
     # Extract the base filename
@@ -305,7 +304,7 @@ for i in range (0,N_mice + 1):
         minutes, seconds = divmod(int(eta_seconds), 60)
         #Print every 25 mice
         if i % 25 == 0:
-            print(f"Souris {i}/{N_mice} | Time left : {minutes}m {seconds}s")
+            print(f"Mouse {i}/{N_mice} | Time left : {minutes}m {seconds}s")
 
 
 
