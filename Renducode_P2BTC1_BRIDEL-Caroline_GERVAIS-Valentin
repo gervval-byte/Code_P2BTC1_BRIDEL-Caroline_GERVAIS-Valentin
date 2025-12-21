@@ -32,7 +32,7 @@ def find_number_of_mice(folderpath):
         column = line.split(';')
         # Get the mouse_id
         mouse_id = column[4] 
-        if mouse_id.startswith("ABX"):
+        if mouse_id[:3]=="ABX":
             # Remove "ABX" 
             number = int(mouse_id[3:])
             #If number is bigger than the max_id then max_id is replaced by number 
@@ -321,4 +321,5 @@ figure_ileal.savefig(images_pathway_data_ileal) #nom du fichier et de sa sortie
 fp_create_fecal.close()
 fp_create_cecal.close()
 fp_create_ileal.close()
+
 
