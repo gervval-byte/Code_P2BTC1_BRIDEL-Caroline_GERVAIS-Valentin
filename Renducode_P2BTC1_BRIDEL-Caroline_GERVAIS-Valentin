@@ -78,8 +78,7 @@ def plot_fecal_data(x, y, treatment, axes_fecal, used_label_fecal):
     axes_fecal.set_xlabel("Treatment's day")
     axes_fecal.set_ylabel("log(10)(live bacteria/wetg)")
     figure_fecal.legend(loc="upper right") # Caption with its location
-    images_pathway_data_fecal=os.path.join(images_pathway,"outfecal.png")
-    figure_fecal.savefig(images_pathway_data_fecal) # Name of the file and it's output
+    
 
 
 
@@ -306,7 +305,9 @@ for i in range (0,N_mice + 1):
         if i % 25 == 0:
             print(f"Mouse {i}/{N_mice} | Time left : {minutes}m {seconds}s")
 
-
+# Save the fecal graph
+images_pathway_data_fecal=os.path.join(images_pathway,"outfecal.png")
+figure_fecal.savefig(images_pathway_data_fecal) # Name of the file and it's output
 
 # Calls the function that generates the graph of bacteria in the cecal area
 create_violin_plot(group_abx, group_placebo, points_cecal, axes_cecal, "Cecal live bacteria", 5.8)
